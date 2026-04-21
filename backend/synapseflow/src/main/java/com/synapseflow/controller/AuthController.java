@@ -1,18 +1,28 @@
 package com.synapseflow.controller;
-
+import com.synapseflow.dto.LoginRequest;
+import com.synapseflow.dto.RegisterRequest;
+import com.synapseflow.entity.User;
+import com.synapseflow.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @PostMapping("/register")
-    public String register() {
-        return "User registered";
-    }
+    private final UserService userService;
 
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
+        User registeredUser = userService.registerUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
+    }
     @PostMapping("/login")
-    public String login() {
-        return "User logged in";
+    public ResponseEntity<User> login(@RequestBody LoginRequest request) {
+        User loggedInUser = userService.loginUser(request);
+        return ResponseEntity.ok(loggedInUser);
     }
 }
