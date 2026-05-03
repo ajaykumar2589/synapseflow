@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.synapseflow.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +46,10 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public Task getTaskById(Long taskId) {
-        return taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-    }
+   public Task getTaskById(Long taskId) {
+    return taskRepository.findById(taskId)
+            .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
+}
 
     @Transactional
     public Task updateTask(Long taskId, TaskRequest request) {
