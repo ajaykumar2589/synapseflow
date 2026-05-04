@@ -3,6 +3,7 @@ package com.synapseflow.controller;
 import com.synapseflow.dto.DashboardResponse;
 import com.synapseflow.entity.User;
 import com.synapseflow.repository.UserRepository;
+import com.synapseflow.service.AIService;
 import com.synapseflow.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +19,21 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
     private final UserRepository userRepository;
+    private final AIService aiService;
 
     @GetMapping
-    public ResponseEntity<DashboardResponse> getDashboard(Authentication authentication) {
-        // Securely identify the user from their token
-        String userEmail = authentication.getName();
-        User currentUser = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+public ResponseEntity<DashboardResponse> getDashboard(Authentication authentication) {
+    String userEmail = authentication.getName();
+    User currentUser = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Get the stats and return them!
-        DashboardResponse stats = dashboardService.getUserDashboardStats(currentUser.getId());
-        return ResponseEntity.ok(stats);
-    }
+    // 1. Get the raw stats
+    DashboardResponse stats = dashboardService.getUserDashboardStats(currentUser.getId());
+
+    // 2. Get the AI summary using the new AIService
+    String coachMessage = aiService.getDailyCoachSummary(currentUser.getUsername(), stats);
+    stats.setAiSummary(coachMessage);
+
+    return ResponseEntity.ok(stats);
+}
 }

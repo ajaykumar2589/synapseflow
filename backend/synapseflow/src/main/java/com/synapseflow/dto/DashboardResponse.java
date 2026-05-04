@@ -14,4 +14,5 @@ public class DashboardResponse {
     private long completedTasks;
     private long inProgressTasks;
     private long todoTasks;
+    private String aiSummary;
 }
