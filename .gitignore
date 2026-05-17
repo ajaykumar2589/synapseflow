@@ -19,5 +19,6 @@ Thumbs.db
 # Logs
 *.log
 
-# Env
+# Env Secrets (CRITICAL)
 .env
+.env.*

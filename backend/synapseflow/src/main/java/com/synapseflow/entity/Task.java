@@ -1,5 +1,6 @@
 package com.synapseflow.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.synapseflow.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @CreationTimestamp
